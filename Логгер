@@ -1,0 +1,42 @@
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        Logger logger = Logger.getInstance();
+
+        String text = scan.next();
+        while (!"end".equals(text)) {
+            logger = Logger.getInstance();
+            logger.putError(text);
+            text = scan.next();
+        }
+
+        System.out.println(logger.getErrors());
+    }
+}
+
+class Logger {
+    private static volatile Logger log;
+    private static volatile StringBuilder logger;
+    
+    private Logger() {
+        logger = new StringBuilder();
+    }
+    
+    public static Logger getInstance() {
+        if (log == null)
+            synchronized (Logger.class) {
+                if (log == null) log = new Logger();
+        }
+        return log;
+    }
+    
+    public static void putError(String text) {
+        logger.insert(0, text + " ");
+    }
+    
+    public static String getErrors() {
+        return logger.toString();
+    }
+}
