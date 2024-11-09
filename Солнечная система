@@ -1,0 +1,82 @@
+import java.util.Scanner;
+
+class Main {
+    private static Scanner scan = new Scanner(System.in);
+
+    public static void main(String[] args) {
+
+        CelestialBody[] bodies = new CelestialBody[6];
+        for (int i = 0; i < bodies.length; i++) {
+            bodies[i] = initCelestialBody();
+        }
+        if (bodies[0] == bodies[3] && bodies[1] == bodies[2] && bodies[4] == bodies[5]) {
+            System.out.println("Ok");
+        } else {
+            System.out.println("Error");
+        }
+    }
+
+    private static CelestialBody initCelestialBody() {
+        while(scan.hasNext()) {
+            switch(scan.next()) {
+                case "Earth": return Earth.getInstance();
+                case "Sun": return Sun.getInstance();
+                case "Moon": return Moon.getInstance();
+                default: return null;
+            }
+        }
+        return null;
+    }
+    
+}
+
+interface CelestialBody {
+}
+
+class Sun implements CelestialBody {
+    private static volatile Sun sun;
+    
+    private Sun() {
+    }
+    
+    public static Sun getInstance() {
+        if (sun == null) 
+            synchronized (Sun.class) {
+                if (sun == null) sun = new Sun();
+        }
+        return sun;
+    }
+    
+}
+
+class Moon implements CelestialBody {
+    private static volatile Moon moon;
+    
+    private Moon() {
+    }
+    
+    public static Moon getInstance() {
+        if (moon == null) 
+            synchronized (Moon.class) {
+                if (moon == null) moon = new Moon();
+        }
+        return moon;
+    }
+    
+}
+
+class Earth implements CelestialBody {
+    private static volatile Earth earth;
+    
+    private Earth() {
+    }
+    
+    public static Earth getInstance() {
+        if (earth == null) 
+            synchronized (Earth.class) {
+            if (earth == null) earth = new Earth();
+        }
+        return earth;
+    }
+    
+}
