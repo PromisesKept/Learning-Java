@@ -1,0 +1,169 @@
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        String descr1 = scan.nextLine();
+        String descr2 = scan.nextLine();
+        String[] words1 = descr1.split(" +");
+        String[] words2 = descr2.split(" +");
+        SuperHero one = createHero(words1);
+        SuperHero two = createHero(words2);
+        fight(one, two);
+    }
+
+    public static SuperHero createHero(String[] words) { //создание героя
+        SuperHero result = null;
+        if (Integer.parseInt(words[0]) == 1) {
+            result = new GreenSuperHero();
+        } else {
+            result = new RedSuperHero();
+        }
+        for (int i = 1; i < words.length; i++) {
+            int type = Integer.parseInt(words[i]);
+            switch (type) {
+                case 1:
+                    result = new SuperPower(result);
+                    break;
+                case 2:
+                    result = new SuperAgility(result);
+                    break;
+                case 3:
+                    result = new SuperIntelligence(result);
+                    break;
+            }
+        }
+        return result;
+    }
+
+    public static void fight(SuperHero one, SuperHero two) { //сражение
+        if (one.getChanceToSurvive() > two.getChanceToSurvive()) {
+            System.out.println(one.getDescription() + " победит " + two.getDescription());
+        } else if (one.getChanceToSurvive() < two.getChanceToSurvive()) {
+            System.out.println(two.getDescription() + " победит " + one.getDescription());
+        } else {
+            System.out.println("Силы " + one.getDescription() + "  и " + two.getDescription() + " равны!");
+        }
+    }
+}
+
+abstract class SuperHero {
+    private String description;
+    private int chanceToSurvive;
+    
+    public SuperHero() {
+    }
+    
+    public SuperHero(String description) {
+        this.description = description;
+    }
+    
+    public String getDescription() {
+        return description;
+    }
+    
+    public abstract int getChanceToSurvive();
+    
+}
+
+class GreenSuperHero extends SuperHero {
+    public GreenSuperHero() {
+        super("Green super-hero");
+    }
+    
+    @Override
+    public int getChanceToSurvive() {
+        return 10;
+    }
+    
+    @Override
+    public String getDescription() {
+        return super.getDescription();
+    }
+    
+}
+
+class RedSuperHero extends SuperHero {
+    public RedSuperHero() {
+        super("Red super-hero");
+    }
+    
+    @Override
+    public int getChanceToSurvive() {
+        return 12;
+    }
+    
+    @Override
+    public String getDescription() {
+        return super.getDescription();
+    }
+}
+
+abstract class Ability extends SuperHero {
+    @Override
+    public abstract String getDescription();
+    
+    @Override
+    public abstract int getChanceToSurvive();
+}
+
+
+// Супер-сила, которая дает + 4 к шансу на выживание (
+class SuperPower extends Ability {
+    SuperHero hero;
+    
+    public SuperPower(SuperHero hero) {
+        this.hero = hero;
+    }
+    
+    @Override
+    public String getDescription() {
+        return hero.getDescription() + ", super Power";
+    }
+    
+    @Override
+    public int getChanceToSurvive() {
+        return hero.getChanceToSurvive() + 4;
+    }
+
+}
+
+// Супер-ловкость, дает +3 к шансу на выживание
+class SuperAgility extends Ability {
+    SuperHero hero;
+    
+    public SuperAgility(SuperHero hero) {
+        this.hero = hero;
+    }
+    
+    @Override
+    public String getDescription() {
+        return hero.getDescription() + ", super Agility";
+    }
+    
+    @Override
+    public int getChanceToSurvive() {
+        return hero.getChanceToSurvive() + 3;
+    }
+
+}
+
+// Супер - ум  -дает +7 к шансу на выживание
+class SuperIntelligence extends Ability {
+    SuperHero hero;
+    
+    public SuperIntelligence(SuperHero hero) {
+        this.hero = hero;
+    }
+    
+    @Override
+    public String getDescription() {
+       return hero.getDescription() + ", super Intelligence";
+    }
+    
+    @Override
+    public int getChanceToSurvive() {
+        return hero.getChanceToSurvive() + 7;
+    }
+    
+}
