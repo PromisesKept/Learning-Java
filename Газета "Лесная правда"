@@ -1,0 +1,140 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Gazeta lesnayaPravda = new Gazeta();
+        lesnayaPravda.registerObserver(new Bear("Потап"));
+        lesnayaPravda.registerObserver(new Bear("Настасья"));
+        lesnayaPravda.registerObserver(new Wolf("Алекс"));
+        lesnayaPravda.registerObserver(new Rabit("Трусишка"));
+        
+        lesnayaPravda.measurementsChanged(1);
+        System.out.println();
+        
+        var sc = new Scanner(System.in);
+        lesnayaPravda.removeObserver(sc.next());
+        System.out.println();
+        
+        lesnayaPravda.measurementsChanged(2);
+
+    }
+}
+
+class Bear implements Observer {
+    private String name;
+
+    public Bear(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void update(int nomer) {
+        System.out.println(this.name + " читает про медведей в номере " + nomer);
+    }
+
+}
+
+class Rabit implements Observer {
+    private String name;
+
+    public Rabit(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void update(int nomer) {
+        System.out.println(this.name + " читает про зайцев в номере " + nomer);
+    }
+
+}
+
+class Wolf implements Observer {
+    private String name;
+
+    public Wolf(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void update(int nomer) {
+        System.out.println(this.name + " читает про волков в номере " + nomer);
+    }
+
+
+}
+
+interface Subject {
+    void registerObserver(Observer o);
+
+    void removeObserver(String name);
+
+    void notifyObservers();
+}
+
+interface Observer {
+    void update(int nomer);
+    String getName();
+
+    default public boolean equals(String name) {
+        return this.getName().equals(name);
+    }
+
+}
+
+class Gazeta implements Subject {
+    private int nomer;
+
+    private List<Observer> observers;
+
+    public Gazeta() {
+        observers = new ArrayList<>();
+    }
+
+    public Observer findName(String name) {
+        for (Observer o: observers) {
+            if (o.getName().equals(name)) return o;
+        } return null;
+    }
+
+    @Override
+    public void registerObserver(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void removeObserver(String name) {
+        if (findName(name) == null) return;
+        int index = observers.indexOf(findName(name));
+        if (index >= 0) {
+            System.out.println(observers.get(index).getName() + " не хочет получать газету");
+            observers.remove(index);
+        }
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (int i = 0; i < observers.size(); i++) {
+            Observer observer = observers.get(i);
+            observer.update(nomer);
+        }
+    }
+
+    public void measurementsChanged(int nomer) {
+        this.nomer = nomer;
+        notifyObservers();
+    }
+}
