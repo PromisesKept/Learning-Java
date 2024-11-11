@@ -1,0 +1,103 @@
+import java.util.Scanner;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.beans.PropertyChangeEvent;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+
+        Informator informator1 = new Informator("МЧС");
+        Informator informator2 = new Informator("Налоговая инспекция");
+
+        Institution one = new Institution("ГГУ им. Ф. Скорины");
+        Institution two = new Institution("БГУ");
+
+        informator1.addListener(one);
+        informator1.addListener(two);
+
+        informator2.addListener(one);
+        informator2.addListener(two);
+
+        String data = scan.nextLine();
+        while (!"end".equals(data)) {
+            String[] words = data.split(";");
+            int informatorNumber = Integer.parseInt(words[0]);
+            if (informatorNumber == 1) {
+                informator1.setText(words[1]);
+            } else {
+                informator2.setText(words[1]);
+            }
+            data = scan.nextLine();
+        }
+    }
+}
+
+class Data {
+    private String text;
+    private Informator informator;
+
+    public Data(String text, Informator informator) {
+        this.text = text;
+        this.informator = informator;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public Informator getInformator() {
+        return informator;
+    }
+
+}
+
+class Informator {
+    private String name;
+    private Data data;
+    private PropertyChangeSupport support;
+
+    public Informator(String name) {
+        this.name = name;
+        support = new PropertyChangeSupport(this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void addListener(PropertyChangeListener listener) {
+        support.addPropertyChangeListener(listener);
+    }
+    public void removeListener(PropertyChangeListener listener) {
+        support.removePropertyChangeListener(listener);
+    }
+
+    public void setText(String text) {
+        Data newData = new Data(text, this);
+        support.firePropertyChange(name, this.data, newData);
+        this.data = newData;
+    }
+
+}
+
+class Institution implements PropertyChangeListener {
+    private String name;
+    private Data data;
+
+    public Institution(String name) {
+        this.name = name;
+    }
+    
+    public void display() {
+        System.out.println(name + " received information from " + data.getInformator().getName() + ":");
+        System.out.println(data.getText());
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        Data newData = (Data) evt.getNewValue();
+        data = newData;
+        display();
+    }
+}
