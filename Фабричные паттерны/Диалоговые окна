@@ -1,0 +1,93 @@
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        String type = scan.nextLine();
+        Dialog dialog = null;
+        if ("Windows".equals(type)) {
+            dialog = new WindowsDialog();
+        } else if ("Html".equals(type)) {
+            dialog = new HtmlDialog();
+        } else {
+            System.out.println("ERROR");
+            return;
+        }
+        dialog.renderWindow();
+    }
+}
+
+abstract class Dialog {
+
+    public void createButton() {
+        System.out.println("Рисуем окно диалога");
+    }
+
+    public abstract void renderWindow();
+}
+
+class WindowsDialog extends Dialog {
+    private String style;
+    private Button button;
+
+    public WindowsDialog() {
+        createButton();
+        this.style = "Windows";
+    }
+
+    @Override
+    public void renderWindow() {
+        this.button = new WindowsButton();
+    }
+}
+
+class HtmlDialog extends Dialog {
+
+    private String style;
+    private Button button;
+
+    public HtmlDialog() {
+        createButton();
+        this.style = "HTML";
+    }
+
+    @Override
+    public void renderWindow() {
+        this.button = new HtmlButton();
+    }
+}
+
+abstract class Button {
+    public void render() {
+        System.out.print("Отрисовали кнопку");
+    }
+}
+
+class WindowsButton extends Button {
+    private String style;
+    public WindowsButton() {
+        this.style = "Windows";
+        render();
+    }
+    @Override
+    public void render() {
+        super.render();
+        System.out.print(" в стиле " + style + " с надписью OK");
+    }
+}
+
+class HtmlButton extends Button {
+    private String style;
+
+    public HtmlButton() {
+        this.style = "HTML";
+        render();
+    }
+
+    @Override
+    public void render() {
+        super.render();
+        System.out.print(" в стиле " + style + " с надписью OK");
+    }
+
+}
